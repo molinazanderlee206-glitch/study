@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tasks & Events</title>
+    <link rel="stylesheet" href="theme.css">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+        }
+        a { text-decoration: none; }
+        .topbar {
+            background: #1f3a5f;
+            color: white;
+            padding: 18px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+        .brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            letter-spacing: 0.04em;
+        }
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .nav-btn {
+            background: #4f9cff;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            display: inline-block;
+        }
+        .nav-btn.active {
+            background: #2f6ed6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 32px auto;
+            padding: 0 20px 40px;
+        }
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .page-header h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .primary-btn, .secondary-btn {
+            border: none;
+            border-radius: 8px;
+            padding: 11px 18px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .primary-btn {
+            background: #1769d2;
+            color: white;
+        }
+        .secondary-btn {
+            background: #1e293b;
+            color: #e2e8f0;
+            border: 1px solid #4b5563;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(150px, 1fr));
+            gap: 18px;
+            margin-bottom: 28px;
+        }
+        .stat-card {
+            background: #1e293b;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .stat-card h3 {
+            margin: 0 0 10px;
+            color: #9fb4cb;
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #f8fafc;
+        }
+        .layout {
+            display: grid;
+            grid-template-columns: 1.6fr 0.9fr;
+            gap: 22px;
+        }
+        .panel {
+            background: #111827;
+            border: 1px solid rgba(148, 163, 184, 0.12);
+            border-radius: 14px;
+            padding: 20px;
+        }
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+        .panel-header h2 {
+            margin: 0;
+            color: #f8fafc;
+            font-size: 1.3rem;
+        }
+        .task-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .task-item {
+            display: grid;
+            grid-template-columns: auto minmax(0, 1fr) auto auto;
+            gap: 14px;
+            align-items: center;
+            background: #1f2937;
+            border: 1px solid rgba(148, 163, 184, 0.12);
+            border-radius: 10px;
+            padding: 14px 16px;
+        }
+        .task-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #4f9cff;
+        }
+        .task-details {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .task-title {
+            font-weight: 700;
+            color: #f8fafc;
+        }
+        .task-item.is-complete .task-title {
+            color: #94a3b8;
+            text-decoration: line-through;
+        }
+        .task-meta {
+            color: #a5b4c9;
+            font-size: 0.9rem;
+        }
+        .task-badge {
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 6px 8px;
+            border-radius: 999px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .high { background: rgba(239, 68, 68, 0.15); color: #fca5a5; }
+        .medium { background: rgba(245, 158, 11, 0.15); color: #fcd34d; }
+        .low { background: rgba(34, 197, 94, 0.15); color: #86efac; }
+        .delete-task-btn {
+            border: 1px solid #64748b;
+            border-radius: 6px;
+            padding: 6px 9px;
+            background: transparent;
+            color: #cbd5e1;
+            cursor: pointer;
+        }
+        .empty-state, .storage-error {
+            margin: 0;
+            padding: 20px;
+            color: #a5b4c9;
+            text-align: center;
+        }
+        .celebration {
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 24px;
+            padding: 20px 24px;
+            border: 1px solid rgba(74, 222, 128, 0.35);
+            border-radius: 14px;
+            background: linear-gradient(120deg, #123b36, #164e63);
+            text-align: center;
+        }
+        .celebration[hidden] {
+            display: none;
+        }
+        .celebration h2 {
+            margin: 0 0 8px;
+            color: #bbf7d0;
+            font-size: 1.2rem;
+        }
+        .celebration p {
+            max-width: 760px;
+            margin: 0 auto;
+            color: #f0fdf4;
+            line-height: 1.6;
+        }
+        .confetti-piece {
+            position: fixed;
+            z-index: 10;
+            top: -16px;
+            left: var(--confetti-left);
+            width: 9px;
+            height: 14px;
+            border-radius: 2px;
+            background: var(--confetti-color);
+            pointer-events: none;
+            animation: confetti-fall var(--confetti-duration) ease-in forwards;
+        }
+        @keyframes confetti-fall {
+            to {
+                transform: translate3d(var(--confetti-drift), 110vh, 0) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        body[data-theme="light"] .celebration {
+            border-color: #86efac;
+            background: linear-gradient(120deg, #ecfdf5, #e0f2fe);
+        }
+        body[data-theme="light"] .celebration h2 {
+            color: #166534;
+        }
+        body[data-theme="light"] .celebration p {
+            color: #164e63;
+        }
+        .storage-error {
+            color: #fca5a5;
+            text-align: left;
+            padding: 0;
+        }
+        .form-grid {
+            display: grid;
+            gap: 16px;
+        }
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .task-form[hidden], .task-list[hidden], .empty-state[hidden] {
+            display: none;
+        }
+        label {
+            color: #cbd5e1;
+            font-size: 0.92rem;
+        }
+        input, select {
+            width: 100%;
+            padding: 11px 12px;
+            border-radius: 8px;
+            border: 1px solid #475569;
+            background: #0f172a;
+            color: #f8fafc;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        @media (max-width: 768px) {
+            .stats, .layout, .form-row { grid-template-columns: 1fr; }
+            .task-item { grid-template-columns: auto minmax(0, 1fr) auto; }
+            .task-badge { justify-self: start; }
+            .delete-task-btn { grid-column: 2 / -1; justify-self: start; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .confetti-piece { animation: none; }
+        }
+    </style> 
+</head>
+<body>
+    <header class="topbar">
+        <div class="brand">StudySync</div>
+        <nav class="nav-buttons" aria-label="Main navigation">
+            <a href="home.html" class="nav-btn">Home</a>
+            <a href="Tasks.html" class="nav-btn active">Tasks &amp; Events</a>
+            <a href="Schedule.html" class="nav-btn">Schedule</a>
+            <a href="Study.html" class="nav-btn">Study</a>
+            <a href="studysync.php" class="nav-btn">History</a>
+            <a href="about.html" class="nav-btn">About Us</a>
+            <a href="pr.html" class="nav-btn">Login</a>
+        </nav>
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch theme">Light theme</button>
+    </header>
+
+    <main class="container">
+        <div class="page-header">
+            <h1>Tasks &amp; Events</h1>
+            <div class="header-actions">
+                <button class="primary-btn" id="show-task-form" type="button">+ Add to my plan</button>
+            </div>
+        </div>
+
+        <section class="stats" aria-label="Task summary">
+            <article class="stat-card">
+                <h3>Open tasks</h3>
+                <div class="value" id="open-task-count">0</div>
+            </article>
+            <article class="stat-card">
+                <h3>Due today</h3>
+                <div class="value" id="due-today-count">0</div>
+            </article>
+            <article class="stat-card">
+                <h3>Completed</h3>
+                <div class="value" id="completed-task-count">0</div>
+            </article>
+            <article class="stat-card">
+                <h3>Progress</h3>
+                <div class="value" id="task-progress">0%</div>
+            </article>
+        </section>
+
+        <section class="celebration" id="task-celebration" aria-live="polite" hidden>
+            <h2>Task complete! You did it!</h2>
+            <p id="celebration-quote"></p>
+        </section>
+
+        <section class="layout">
+            <div class="panel">
+                <div class="panel-header">
+                    <h2>My plan</h2>
+                </div>
+                <p class="storage-error" id="storage-error" role="alert" hidden></p>
+                <p class="storage-error" id="history-error" role="alert" hidden></p>
+                <p class="empty-state" id="empty-state">Your plan is empty. Add a task or event to get started.</p>
+                <ul class="task-list" id="task-list" aria-live="polite" hidden></ul>
+            </div>
+
+            <aside class="panel">
+                <div class="panel-header">
+                    <h2>Add to my plan</h2>
+                </div>
+                <form class="form-grid task-form" id="task-form">
+                    <div class="field">
+                        <label for="task-type">Type</label>
+                        <select id="task-type" name="type">
+                            <option value="Task">Task</option>
+                            <option value="Event">Event</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="task-name">Name</label>
+                        <input id="task-name" name="title" type="text" maxlength="120" placeholder="e.g. Review biology notes" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="class-name">Class</label>
+                        <input id="class-name" name="className" type="text" maxlength="80" placeholder="e.g. Biology">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="field">
+                            <label for="due-date">Due date</label>
+                            <input id="due-date" name="dueDate" type="date">
+                        </div>
+                        <div class="field">
+                            <label for="due-time">Time (optional)</label>
+                            <input id="due-time" name="dueTime" type="time">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="priority">Priority</label>
+                        <select id="priority" name="priority">
+                            <option value="Low">Low</option>
+                            <option value="Medium" selected>Medium</option>
+                            <option value="High">High</option>
+                        </select>
+                    </div>
+
+                    <button class="primary-btn" type="submit">Save task</button>
+                </form>
+            </aside>
+        </section>
+    </main>
+    <script src="notifications.js"></script>
+    <script src="theme.js"></script>
+    <script>
+        const taskStorageKey = "studysync-tasks";
+        const taskForm = document.getElementById("task-form");
+        const taskList = document.getElementById("task-list");
+        const emptyState = document.getElementById("empty-state");
+        const storageError = document.getElementById("storage-error");
+        const historyError = document.getElementById("history-error");
+        const celebration = document.getElementById("task-celebration");
+        const celebrationQuote = document.getElementById("celebration-quote");
+        const motivationalQuotes = [
+            "You don't have to accomplish everything in one day. Sometimes, simply showing up and giving your best is already a victory worth celebrating.",
+            "Every task you finish, every lesson you learn, and every challenge you face is proof that you are becoming someone stronger than you were yesterday.",
+            "Don't be disappointed because you are not where you want to be yet. Even the smallest seeds need time before they become something beautiful.",
+            "You may not have done everything perfectly, but you did your best and completed what you could. Give yourself credit for the effort it took to get there.",
+            "One exhausting day does not cancel all the hard work you've done. Rest, breathe, and remember how far you've already come.",
+            "Grades may measure your performance, but they cannot measure your determination, kindness, courage, or the effort you put into becoming better.",
+            "You don't need to follow someone else's timeline. Focus on your journey, celebrate your progress, and trust that every step forward counts.",
+            "Never underestimate the satisfaction of finishing something you once felt too tired or overwhelmed to begin. You did it, and that matters.",
+            "Being hardworking doesn't mean being exhausted all the time. You can take a break, recharge your mind, and return when you're ready.",
+            "Even when nobody notices your late nights, your persistence, or the struggles behind your achievements, your effort is still real and worthy of recognition.",
+            "You don't have to let today's mistakes define you. Learn what you can, forgive yourself for what you couldn't do, and give tomorrow a fresh beginning.",
+            "Every time you choose to try, learn, or finish a responsibility despite feeling unmotivated, you are building habits that can carry you toward your goals.",
+            "When school feels overwhelming, remember the days you thought you couldn't finish but somehow made it through. Let those moments remind you of your resilience.",
+            "Be proud not only of what you accomplish, but also of the patience, responsibility, and courage you develop along the way.",
+            "To the student who keeps showing up, completing tasks, and trying again even when things get difficult: thank yourself for your effort. You deserve to feel proud, not only when you succeed, but every time you sincerely try."
+        ];
+        let tasks = [];
+
+        function celebrateTaskCompletion() {
+            celebrationQuote.textContent = motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
+            celebration.hidden = false;
+
+            if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+            const colors = ["#4ade80", "#38bdf8", "#facc15", "#fb7185", "#c084fc"];
+            for (let index = 0; index < 48; index += 1) {
+                const piece = document.createElement("span");
+                piece.className = "confetti-piece";
+                piece.setAttribute("aria-hidden", "true");
+                piece.style.setProperty("--confetti-left", `${Math.random() * 100}vw`);
+                piece.style.setProperty("--confetti-drift", `${Math.random() * 240 - 120}px`);
+                piece.style.setProperty("--confetti-duration", `${1.4 + Math.random() * 1.2}s`);
+                piece.style.setProperty("--confetti-color", colors[index % colors.length]);
+                document.body.append(piece);
+                window.setTimeout(() => piece.remove(), 2800);
+            }
+        }
+
+        try {
+            const storedTasks = JSON.parse(localStorage.getItem(taskStorageKey) || "[]");
+            if (Array.isArray(storedTasks)) {
+                tasks = storedTasks.filter((task) =>
+                    task &&
+                    typeof task.id === "string" &&
+                    typeof task.title === "string" &&
+                    typeof task.completed === "boolean"
+                );
+            }
+        } catch (error) {
+            storageError.textContent = "Saved tasks could not be read from this browser.";
+            storageError.hidden = false;
+        }
+
+        function saveTasks() {
+            try {
+                localStorage.setItem(taskStorageKey, JSON.stringify(tasks));
+                storageError.hidden = true;
+            } catch (error) {
+                storageError.textContent = "Your change could not be saved in this browser. Please check browser storage settings.";
+                storageError.hidden = false;
+            }
+        }
+
+        async function recordTaskCompletion(task) {
+            try {
+                const response = await fetch("studysync.php?api=1", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        kind: "task",
+                        task_id: task.id,
+                        title: task.title,
+                        type: task.type || "Task"
+                    })
+                });
+                const result = await response.json();
+                if (!response.ok) throw new Error(result.error || "History could not be saved.");
+                historyError.hidden = true;
+            } catch (error) {
+                historyError.textContent = error.message || "History could not be saved. Check that the site is running through XAMPP and MySQL is available.";
+                historyError.hidden = false;
+            }
+        }
+
+        function renderTasks() {
+            taskList.replaceChildren();
+            emptyState.hidden = tasks.length > 0;
+            taskList.hidden = tasks.length === 0;
+
+            tasks.forEach((task) => {
+                const item = document.createElement("li");
+                item.className = `task-item${task.completed ? " is-complete" : ""}`;
+
+                const checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.checked = task.completed;
+                checkbox.setAttribute("aria-label", `Mark ${task.title} complete`);
+                checkbox.addEventListener("change", () => {
+                    task.completed = checkbox.checked;
+                    saveTasks();
+                    renderTasks();
+                    if (checkbox.checked) {
+                        celebrateTaskCompletion();
+                        window.StudySyncNotifications.play();
+                        recordTaskCompletion(task);
+                    }
+                });
+
+                const details = document.createElement("div");
+                details.className = "task-details";
+                const title = document.createElement("span");
+                title.className = "task-title";
+                title.textContent = task.title;
+                const metadata = [
+                    task.type || "Task",
+                    task.className,
+                    task.dueDate ? `Due ${task.dueDate}` : "",
+                    task.dueTime || ""
+                ].filter(Boolean).join(" · ");
+                const meta = document.createElement("span");
+                meta.className = "task-meta";
+                meta.textContent = metadata;
+                details.append(title, meta);
+
+                const priority = document.createElement("span");
+                const priorityValue = ["Low", "Medium", "High"].includes(task.priority) ? task.priority : "Medium";
+                priority.className = `task-badge ${priorityValue.toLowerCase()}`;
+                priority.textContent = priorityValue;
+
+                const deleteButton = document.createElement("button");
+                deleteButton.type = "button";
+                deleteButton.className = "delete-task-btn";
+                deleteButton.textContent = "Delete";
+                deleteButton.setAttribute("aria-label", `Delete ${task.title}`);
+                deleteButton.addEventListener("click", () => {
+                    tasks = tasks.filter((savedTask) => savedTask.id !== task.id);
+                    saveTasks();
+                    renderTasks();
+                });
+
+                item.append(checkbox, details, priority, deleteButton);
+                taskList.append(item);
+            });
+
+            const completedCount = tasks.filter((task) => task.completed).length;
+            const openTasks = tasks.filter((task) => !task.completed);
+            const today = new Date();
+            const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+            document.getElementById("open-task-count").textContent = openTasks.length;
+            document.getElementById("due-today-count").textContent = openTasks.filter((task) => task.dueDate === todayKey).length;
+            document.getElementById("completed-task-count").textContent = completedCount;
+            document.getElementById("task-progress").textContent = tasks.length
+                ? `${Math.round((completedCount / tasks.length) * 100)}%`
+                : "0%";
+        }
+
+        document.getElementById("show-task-form").addEventListener("click", () => {
+            document.getElementById("task-name").focus();
+        });
+
+        taskForm.addEventListener("submit", (event) => {
+            event.preventDefault();
+            const formData = new FormData(taskForm);
+            tasks.push({
+                id: `${Date.now()}-${Math.random()}`,
+                type: formData.get("type"),
+                title: formData.get("title").trim(),
+                className: formData.get("className").trim(),
+                dueDate: formData.get("dueDate"),
+                dueTime: formData.get("dueTime"),
+                priority: formData.get("priority"),
+                completed: false
+            });
+            saveTasks();
+            renderTasks();
+            window.StudySyncNotifications.play();
+            taskForm.reset();
+        });
+
+        renderTasks();
+    </script>
+</body>
+</html>

@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule</title>
+    <link rel="stylesheet" href="theme.css">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+        }
+        a { text-decoration: none; }
+        .topbar {
+            background: #1f3a5f;
+            color: white;
+            padding: 18px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+        .brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            letter-spacing: 0.04em;
+        }
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .nav-btn {
+            background: #4f9cff;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            display: inline-block;
+        }
+        .nav-btn.active {
+            background: #2f6ed6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 32px auto;
+            padding: 0 20px 40px;
+        }
+        .page-header {
+            margin-bottom: 24px;
+        }
+        .page-header h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+        .schedule-layout {
+            display: grid;
+            grid-template-columns: 1.6fr 0.8fr;
+            gap: 22px;
+        }
+        .panel {
+            background: #111827;
+            border: 1px solid rgba(148, 163, 184, 0.12);
+            border-radius: 14px;
+            padding: 20px;
+        }
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(7, minmax(120px, 1fr));
+            gap: 12px;
+        }
+        .day-header {
+            background: #1f2937;
+            border-radius: 10px;
+            padding: 16px 12px;
+            text-align: center;
+            font-weight: 700;
+            color: #cbd5e1;
+        }
+        .day-slot {
+            min-height: 150px;
+            background: #0f172a;
+            border: 1px solid rgba(148, 163, 184, 0.12);
+            border-radius: 10px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .slot-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+        }
+        .session {
+            background: rgba(79, 156, 255, 0.14);
+            border: 1px solid rgba(96, 165, 250, 0.45);
+            border-radius: 8px;
+            padding: 8px 10px;
+            color: #dbeafe;
+            font-size: 0.82rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+        .session strong {
+            display: block;
+            margin-bottom: 2px;
+            overflow-wrap: anywhere;
+        }
+        .session span {
+            display: block;
+            color: #bfdbfe;
+        }
+        .remove-entry-btn {
+            background: transparent;
+            border: none;
+            color: #fca5a5;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+        .add-entry-btn {
+            margin-top: auto;
+            border: none;
+            background: #1f3a5f;
+            color: white;
+            border-radius: 6px;
+            padding: 8px 10px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+        label {
+            color: #dbeafe;
+            font-size: 0.9rem;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #475569;
+            border-radius: 8px;
+            background: #0f172a;
+            color: #f8fafc;
+        }
+        .save-schedule-btn {
+            width: 100%;
+            background: #1769d2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 11px 14px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .side-list {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+        .mini-card {
+            background: #1f2937;
+            border: 1px solid rgba(148, 163, 184, 0.12);
+            border-radius: 10px;
+            padding: 16px;
+        }
+        .mini-card h3 {
+            margin: 0 0 12px;
+            color: #f8fafc;
+        }
+        .mini-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .mini-card li {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            color: #cbd5e1;
+            font-size: 0.92rem;
+        }
+        @media (max-width: 900px) {
+            .schedule-layout { grid-template-columns: 1fr; }
+            .schedule-grid { overflow-x: auto; }
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <div class="brand">StudySync</div>
+        <nav class="nav-buttons" aria-label="Main navigation">
+            <a href="home.html" class="nav-btn">Home</a>
+            <a href="Tasks.html" class="nav-btn">Tasks &amp; Events</a>
+            <a href="Schedule.html" class="nav-btn active">Schedule</a>
+            <a href="Study.html" class="nav-btn">Study</a>
+            <a href="studysync.php" class="nav-btn">History</a>
+            <a href="about.html" class="nav-btn">About Us</a>
+            <a href="pr.html" class="nav-btn">Login</a>
+        </nav>
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch theme">Light theme</button>
+    </header>
+
+    <main class="container">
+        <header class="page-header">
+            <h1>Weekly Schedule</h1>
+        </header>
+
+        <section class="schedule-layout">
+            <div class="panel">
+                <div class="schedule-grid" aria-label="Weekly study schedule">
+                    <div class="day-header">Monday</div>
+                    <div class="day-header">Tuesday</div>
+                    <div class="day-header">Wednesday</div>
+                    <div class="day-header">Thursday</div>
+                    <div class="day-header">Friday</div>
+                    <div class="day-header">Saturday</div>
+                    <div class="day-header">Sunday</div>
+
+                    <div class="day-slot" data-day="Monday">
+                        <div class="slot-items"></div>
+                        <button class="add-entry-btn" type="button">+ Add</button>
+                    </div>
+                    <div class="day-slot" data-day="Tuesday">
+                        <div class="slot-items"></div>
+                        <button class="add-entry-btn" type="button">+ Add</button>
+                    </div>
+                    <div class="day-slot" data-day="Wednesday">
+                        <div class="slot-items"></div>
+                        <button class="add-entry-btn" type="button">+ Add</button>
+                    </div>
+                    <div class="day-slot" data-day="Thursday">
+                        <div class="slot-items"></div>
+                        <button class="add-entry-btn" type="button">+ Add</button>
+                    </div>
+                    <div class="day-slot" data-day="Friday">
+                        <div class="slot-items"></div>
+                        <button class="add-entry-btn" type="button">+ Add</button>
+                    </div>
+                    <div class="day-slot" data-day="Saturday">
+                        <div class="slot-items"></div>
+                        <button class="add-entry-btn" type="button">+ Add</button>
+                    </div>
+                    <div class="day-slot" data-day="Sunday">
+                        <div class="slot-items"></div>
+                        <button class="add-entry-btn" type="button">+ Add</button>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="side-list">
+                <form id="schedule-form" class="mini-card">
+                    <h3>Add to schedule</h3>
+                    <div class="field-group">
+                        <label for="schedule-day">Day</label>
+                        <select id="schedule-day">
+                            <option>Monday</option>
+                            <option>Tuesday</option>
+                            <option>Wednesday</option>
+                            <option>Thursday</option>
+                            <option>Friday</option>
+                            <option>Saturday</option>
+                            <option>Sunday</option>
+                        </select>
+                    </div>
+                    <div class="field-group">
+                        <label for="schedule-title">Title</label>
+                        <input id="schedule-title" type="text" placeholder="e.g. Math class" maxlength="60" required>
+                    </div>
+                    <div class="field-group">
+                        <label for="schedule-time">Time</label>
+                        <input id="schedule-time" type="text" placeholder="e.g. 9:00 AM" maxlength="20">
+                    </div>
+                    <button class="save-schedule-btn" type="submit">Save</button>
+                </form>
+            </aside>
+        </section>
+    </main>
+
+    <script>
+        const storageKey = "studysync-schedule";
+        const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+        let scheduleItems = [];
+        try {
+            const stored = JSON.parse(localStorage.getItem(storageKey) || "[]");
+            scheduleItems = Array.isArray(stored) ? stored : [];
+        } catch {
+            scheduleItems = [];
+        }
+
+        const scheduleForm = document.getElementById("schedule-form");
+        const scheduleDay = document.getElementById("schedule-day");
+        const scheduleTitle = document.getElementById("schedule-title");
+        const scheduleTime = document.getElementById("schedule-time");
+
+        function saveSchedule() {
+            localStorage.setItem(storageKey, JSON.stringify(scheduleItems));
+        }
+
+        function renderSchedule() {
+            document.querySelectorAll(".day-slot").forEach((slot) => {
+                const slotItems = slot.querySelector(".slot-items");
+                slotItems.innerHTML = "";
+
+                const items = scheduleItems.filter((item) => item.day === slot.dataset.day);
+                items.forEach((item) => {
+                    const entry = document.createElement("div");
+                    entry.className = "session";
+                    const title = document.createElement("strong");
+                    title.textContent = item.title;
+                    const time = document.createElement("span");
+                    time.textContent = item.time || "No time set";
+                    entry.append(title, time);
+
+                    const removeBtn = document.createElement("button");
+                    removeBtn.type = "button";
+                    removeBtn.className = "remove-entry-btn";
+                    removeBtn.textContent = "×";
+                    removeBtn.setAttribute("aria-label", `Remove ${item.title}`);
+                    removeBtn.addEventListener("click", () => {
+                        scheduleItems = scheduleItems.filter((row) => row.id !== item.id);
+                        saveSchedule();
+                        renderSchedule();
+                    });
+
+                    entry.appendChild(removeBtn);
+                    slotItems.appendChild(entry);
+                });
+            });
+        }
+
+        scheduleForm.addEventListener("submit", (event) => {
+            event.preventDefault();
+            const day = scheduleDay.value;
+            const title = scheduleTitle.value.trim();
+            const time = scheduleTime.value.trim();
+
+            if (!title) return;
+
+            scheduleItems.push({
+                id: `${Date.now()}-${Math.random()}`,
+                day,
+                title,
+                time
+            });
+
+            saveSchedule();
+            renderSchedule();
+            scheduleForm.reset();
+            scheduleDay.value = days[0];
+        });
+
+        document.querySelectorAll(".add-entry-btn").forEach((button) => {
+            button.addEventListener("click", () => {
+                const daySlot = button.parentElement.dataset.day;
+                scheduleDay.value = daySlot;
+                scheduleTitle.focus();
+            });
+        });
+
+        renderSchedule();
+    </script>
+    <script src="theme.js"></script>
+</body>
+</html>

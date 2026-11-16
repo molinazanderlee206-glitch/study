@@ -1,0 +1,14 @@
+function renderLyrics(lyricsText, container) {
+  const paragraphs = lyricsText
+    .trim()
+    .split(/\r?\n/)
+    .map((line) => {
+      const paragraph = document.createElement("p");
+      paragraph.textContent = line;
+      return paragraph;
+    });
+
+  container.replaceChildren(...paragraphs);
+}
+
+// Example: renderLyrics(yourLyricsText, document.querySelector("#lyrics"));

@@ -1,0 +1,451 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Dashboard</title>
+    <link rel="stylesheet" href="home.css">
+    <link rel="stylesheet" href="theme.css">
+</head>
+<body>
+    <header class="topbar">
+        <a class="brand" href="home.html" aria-label="StudySync home">
+            <img src="studysync-logo.jpg" alt="StudySync">
+        </a>
+        <nav class="nav-buttons" aria-label="Main navigation">
+            <a href="home.html" class="nav-btn active">Home</a>
+            <a href="Tasks.html" class="nav-btn">Tasks &amp; Events</a>
+            <a href="Schedule.html" class="nav-btn">Schedule</a>
+            <a href="Study.html" class="nav-btn">Study</a>
+            <a href="studysync.php" class="nav-btn">History</a>
+            <a href="about.html" class="nav-btn">About Us</a>
+            <a href="pr.html" class="nav-btn">Login</a>
+        </nav>
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch theme">Light theme</button>
+    </header>
+
+    <main>
+        <section id="home" class="dashboard-home" aria-labelledby="dashboard-title">
+            <div class="dashboard-heading">
+                <div>
+                    <p class="dashboard-eyebrow">YOUR STUDY SPACE</p>
+                    <h1 id="dashboard-title">Welcome back</h1>
+                    <p class="dashboard-date" id="dashboard-date"></p>
+                </div>
+                <div class="dashboard-actions">
+                    <button class="dashboard-action" id="dashboard-add-task" type="button">+ Add Task</button>
+                    <a class="dashboard-action secondary" href="Study.html">Study Session</a>
+                </div>
+            </div>
+
+            <div class="overview" aria-label="Study overview">
+                <article class="card dashboard-stat-card">
+                    <h3>Open tasks</h3>
+                    <p class="stat" id="open-task-stat">0</p>
+                </article>
+                <article class="card dashboard-stat-card">
+                    <h3>Due today</h3>
+                    <p class="stat" id="due-today-stat">0</p>
+                </article>
+                <article class="card dashboard-stat-card">
+                    <h3>Completed</h3>
+                    <p class="stat" id="completed-task-stat">0</p>
+                </article>
+                <article class="card dashboard-stat-card">
+                    <h3>Progress</h3>
+                    <p class="stat" id="task-progress-stat">0%</p>
+                </article>
+            </div>
+
+            <section class="dashboard-upcoming" aria-labelledby="upcoming-title">
+                <div class="section-heading">
+                    <h2 id="upcoming-title">Coming up</h2>
+                    <a class="dashboard-view-link" href="Tasks.html">All tasks</a>
+                </div>
+                <p class="dashboard-empty" id="upcoming-empty">No open tasks yet. Add one to start planning.</p>
+                <ul class="upcoming-task-list" id="upcoming-task-list" aria-live="polite" hidden></ul>
+            </section>
+        </section>
+
+        <section id="schedule" class="schedule" aria-labelledby="schedule-title">
+            <h2 id="schedule-title">Weekly Schedule</h2>
+            <div class="schedule-grid" aria-label="Select a day">
+                <button class="day" type="button" data-day="Monday"><strong>Monday</strong></button>
+                <button class="day" type="button" data-day="Tuesday"><strong>Tuesday</strong></button>
+                <button class="day" type="button" data-day="Wednesday"><strong>Wednesday</strong></button>
+                <button class="day" type="button" data-day="Thursday"><strong>Thursday</strong></button>
+                <button class="day" type="button" data-day="Friday"><strong>Friday</strong></button>
+                <button class="day" type="button" data-day="Saturday"><strong>Saturday</strong></button>
+                <button class="day" type="button" data-day="Sunday"><strong>Sunday</strong></button>
+            </div>
+            <section class="selected-day" aria-labelledby="selected-day-title">
+                <h3 id="selected-day-title"></h3>
+                <div class="selected-day-columns">
+                    <div>
+                        <h4>Classes</h4>
+                        <p class="selected-day-empty" id="selected-classes-empty">No classes scheduled.</p>
+                        <ul class="selected-day-list" id="selected-classes" hidden></ul>
+                    </div>
+                    <div>
+                        <h4>Pending tasks</h4>
+                        <p class="selected-day-empty" id="selected-tasks-empty">No pending tasks due.</p>
+                        <ul class="selected-day-list" id="selected-tasks" hidden></ul>
+                    </div>
+                </div>
+            </section>
+        </section>
+        <section id="classes" class="content-section" aria-labelledby="classes-title">
+            <div class="section-heading">
+                <h2 id="classes-title">Classes</h2>
+                <div class="dashboard-actions">
+                    <span class="section-count" id="classes-count">0 scheduled</span>
+                    <a class="dashboard-view-link" href="Schedule.html">Edit schedule</a>
+                </div>
+            </div>
+            <div class="empty-state" id="classes-empty-state">
+                <span class="empty-state-icon" aria-hidden="true">&#9749;</span>
+                <p id="classes-empty-message">No classes scheduled yet</p>
+            </div>
+            <ul class="schedule-class-list" id="today-classes" aria-live="polite" hidden></ul>
+        </section>
+
+        <section id="tasks-events" class="content-section" aria-labelledby="tasks-title">
+            <div class="section-heading">
+            <h2 id="tasks-title">Tasks &amp; Events</h2>
+                <span class="section-count" id="task-count">0/0</span>
+            </div>
+            <div class="empty-state" id="task-empty-state">
+                <span class="empty-state-icon" aria-hidden="true">&#9776;</span>
+                <p>No tasks yet</p>
+            </div>
+            <ul class="planner-task-list" id="task-list" aria-live="polite" hidden></ul>
+            <form class="task-form" id="task-form" hidden>
+                <label>
+                    Task name
+                    <input name="title" type="text" maxlength="120" placeholder="e.g. Review biology notes" required>
+                </label>
+                <div class="task-form-row">
+                    <label>
+                        Class (optional)
+                        <input name="className" type="text" maxlength="80" placeholder="e.g. Biology">
+                    </label>
+                    <label>
+                        Due date
+                        <input name="dueDate" type="date">
+                    </label>
+                </div>
+                <label>
+                    Due time (optional)
+                    <input name="dueTime" type="time">
+                </label>
+                <label>
+                    Priority
+                    <select name="priority">
+                        <option value="Low">Low</option>
+                        <option value="Medium" selected>Medium</option>
+                        <option value="High">High</option>
+                    </select>
+                </label>
+                <div class="task-form-actions">
+                    <button class="task-save-button" type="submit">Save task</button>
+                    <button class="task-cancel-button" id="cancel-task" type="button">Cancel</button>
+                </div>
+            </form>
+            <button class="add-task-button" id="add-task" type="button">+ Add Task</button>
+        </section>
+    </main>
+    <button class="floating-add-button" id="floating-add-task" type="button" aria-label="Add task">+</button>
+    <script src="notifications.js"></script>
+    <script src="theme.js"></script>
+    <script>
+        const taskForm = document.getElementById("task-form");
+        const taskList = document.getElementById("task-list");
+        const emptyState = document.getElementById("task-empty-state");
+        const taskCount = document.getElementById("task-count");
+        const upcomingTaskList = document.getElementById("upcoming-task-list");
+        const upcomingEmpty = document.getElementById("upcoming-empty");
+        const taskStorageKey = "studysync-tasks";
+        const scheduleStorageKey = "studysync-schedule";
+        const todayClasses = document.getElementById("today-classes");
+        const classesEmptyState = document.getElementById("classes-empty-state");
+        const classesEmptyMessage = document.getElementById("classes-empty-message");
+        const weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+        const selectedDayTitle = document.getElementById("selected-day-title");
+        const selectedClasses = document.getElementById("selected-classes");
+        const selectedClassesEmpty = document.getElementById("selected-classes-empty");
+        const selectedTasks = document.getElementById("selected-tasks");
+        const selectedTasksEmpty = document.getElementById("selected-tasks-empty");
+        let tasks = [];
+        let selectedDay = weekdays[(new Date().getDay() + 6) % 7];
+
+        try {
+            tasks = JSON.parse(localStorage.getItem(taskStorageKey) || "[]");
+            if (!Array.isArray(tasks)) tasks = [];
+        } catch {
+            tasks = [];
+        }
+
+        function saveTasks() {
+            try {
+                localStorage.setItem(taskStorageKey, JSON.stringify(tasks));
+            } catch {
+                // The task list still works for this page view if storage is unavailable.
+            }
+        }
+
+        function renderTasks() {
+            taskList.replaceChildren();
+            emptyState.hidden = tasks.length > 0;
+            taskList.hidden = tasks.length === 0;
+
+            tasks.forEach((task) => {
+                const item = document.createElement("li");
+                item.className = `planner-task-item${task.completed ? " is-complete" : ""}`;
+
+                const checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.checked = task.completed;
+                checkbox.setAttribute("aria-label", `Mark ${task.title} complete`);
+                checkbox.addEventListener("change", () => {
+                    task.completed = checkbox.checked;
+                    saveTasks();
+                    renderTasks();
+                    if (checkbox.checked) window.StudySyncNotifications.play();
+                });
+
+                const details = document.createElement("div");
+                details.className = "planner-task-details";
+                const title = document.createElement("strong");
+                title.textContent = task.title;
+                details.append(title);
+
+                const metadata = [
+                    task.className,
+                    task.dueDate ? `Due ${task.dueDate}` : "",
+                    task.dueTime || "",
+                    `${task.priority} priority`
+                ]
+                    .filter(Boolean)
+                    .join(" · ");
+                const meta = document.createElement("span");
+                meta.textContent = metadata;
+                details.append(meta);
+
+                const removeButton = document.createElement("button");
+                removeButton.type = "button";
+                removeButton.className = "delete-task-button";
+                removeButton.textContent = "Delete";
+                removeButton.setAttribute("aria-label", `Delete ${task.title}`);
+                removeButton.addEventListener("click", () => {
+                    tasks = tasks.filter((itemTask) => itemTask.id !== task.id);
+                    saveTasks();
+                    renderTasks();
+                });
+
+                item.append(checkbox, details, removeButton);
+                taskList.append(item);
+            });
+
+            const completedCount = tasks.filter((task) => task.completed).length;
+            taskCount.textContent = `${completedCount}/${tasks.length}`;
+            const openTasks = tasks.filter((task) => !task.completed);
+            const today = new Date();
+            const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+
+            document.getElementById("open-task-stat").textContent = openTasks.length;
+            document.getElementById("due-today-stat").textContent = openTasks.filter((task) => task.dueDate === todayKey).length;
+            document.getElementById("completed-task-stat").textContent = completedCount;
+            document.getElementById("task-progress-stat").textContent = tasks.length
+                ? `${Math.round((completedCount / tasks.length) * 100)}%`
+                : "0%";
+
+            renderSelectedDay();
+            upcomingTaskList.replaceChildren();
+            const upcomingTasks = [...openTasks]
+                .sort((first, second) => (first.dueDate || "9999-12-31").localeCompare(second.dueDate || "9999-12-31"))
+                .slice(0, 3);
+            upcomingEmpty.hidden = upcomingTasks.length > 0;
+            upcomingTaskList.hidden = upcomingTasks.length === 0;
+
+            upcomingTasks.forEach((task) => {
+                const item = document.createElement("li");
+                const title = document.createElement("strong");
+                title.textContent = task.title;
+                const dueDate = document.createElement("span");
+                dueDate.textContent = task.dueDate
+                    ? `Due ${new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric" }).format(new Date(`${task.dueDate}T00:00:00`))}`
+                    : "No due date";
+                item.append(title, dueDate);
+                upcomingTaskList.append(item);
+            });
+        }
+
+        function openTaskForm() {
+            taskForm.hidden = false;
+            taskForm.elements.title.focus();
+        }
+
+        function renderTodayClasses() {
+            let scheduleItems = [];
+
+            try {
+                const storedSchedule = JSON.parse(localStorage.getItem(scheduleStorageKey) || "[]");
+                if (Array.isArray(storedSchedule)) {
+                    scheduleItems = storedSchedule;
+                }
+            } catch {
+                scheduleItems = [];
+            }
+
+            const classes = scheduleItems
+                .filter((item) => item
+                    && weekdays.includes(item.day)
+                    && typeof item.title === "string"
+                    && item.title.trim())
+                .sort((first, second) => {
+                    const dayOrder = weekdays.indexOf(first.day) - weekdays.indexOf(second.day);
+                    if (dayOrder !== 0) return dayOrder;
+                    const firstTime = typeof first.time === "string" ? first.time : "";
+                    const secondTime = typeof second.time === "string" ? second.time : "";
+                    return firstTime.localeCompare(secondTime);
+                });
+
+            todayClasses.replaceChildren();
+            document.getElementById("classes-count").textContent = `${classes.length} scheduled`;
+            classesEmptyState.hidden = classes.length > 0;
+            todayClasses.hidden = classes.length === 0;
+            classesEmptyMessage.textContent = "No classes scheduled yet";
+
+            classes.forEach((classItem) => {
+                const item = document.createElement("li");
+                const title = document.createElement("strong");
+                title.textContent = classItem.title;
+                const time = document.createElement("span");
+                const classTime = typeof classItem.time === "string" && classItem.time.trim()
+                    ? classItem.time
+                    : "No time set";
+                time.textContent = `${classItem.day} · ${classTime}`;
+                item.append(title, time);
+                todayClasses.append(item);
+            });
+        }
+
+        function renderSelectedDay() {
+            const today = new Date();
+            const monday = new Date(today);
+            monday.setDate(today.getDate() - ((today.getDay() + 6) % 7));
+            const selectedDate = new Date(monday);
+            selectedDate.setDate(monday.getDate() + weekdays.indexOf(selectedDay));
+            const dateKey = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, "0")}-${String(selectedDate.getDate()).padStart(2, "0")}`;
+
+            selectedDayTitle.textContent = `${selectedDay} — ${new Intl.DateTimeFormat(undefined, {
+                month: "long",
+                day: "numeric"
+            }).format(selectedDate)}`;
+
+            document.querySelectorAll(".schedule-grid .day").forEach((button) => {
+                const isSelected = button.dataset.day === selectedDay;
+                button.classList.toggle("is-selected", isSelected);
+                button.setAttribute("aria-pressed", String(isSelected));
+            });
+
+            let scheduleItems = [];
+            try {
+                const storedSchedule = JSON.parse(localStorage.getItem(scheduleStorageKey) || "[]");
+                if (Array.isArray(storedSchedule)) scheduleItems = storedSchedule;
+            } catch {
+                scheduleItems = [];
+            }
+
+            const classes = scheduleItems
+                .filter((item) => item && item.day === selectedDay && typeof item.title === "string" && item.title.trim())
+                .sort((first, second) => (first.time || "").localeCompare(second.time || ""));
+            selectedClasses.replaceChildren();
+            selectedClassesEmpty.hidden = classes.length > 0;
+            selectedClasses.hidden = classes.length === 0;
+            classes.forEach((classItem) => {
+                const item = document.createElement("li");
+                const title = document.createElement("strong");
+                title.textContent = classItem.title;
+                const time = document.createElement("span");
+                time.textContent = classItem.time || "No time set";
+                item.append(title, time);
+                selectedClasses.append(item);
+            });
+
+            const pendingTasks = tasks.filter((task) => !task.completed && task.dueDate === dateKey);
+            selectedTasks.replaceChildren();
+            selectedTasksEmpty.hidden = pendingTasks.length > 0;
+            selectedTasks.hidden = pendingTasks.length === 0;
+            pendingTasks.forEach((task) => {
+                const item = document.createElement("li");
+                const title = document.createElement("strong");
+                title.textContent = task.title;
+                const details = document.createElement("span");
+                details.textContent = task.className || `${task.priority} priority`;
+                item.append(title, details);
+                selectedTasks.append(item);
+            });
+        }
+
+        document.querySelectorAll(".schedule-grid .day").forEach((button) => {
+            button.addEventListener("click", () => {
+                selectedDay = button.dataset.day;
+                renderSelectedDay();
+            });
+        });
+
+        document.getElementById("dashboard-date").textContent = new Intl.DateTimeFormat(undefined, {
+            weekday: "long",
+            month: "long",
+            day: "numeric",
+            year: "numeric"
+        }).format(new Date());
+        window.addEventListener("storage", (event) => {
+            if (event.key === scheduleStorageKey || event.key === null) {
+                renderTodayClasses();
+                renderSelectedDay();
+            }
+            if (event.key === taskStorageKey || event.key === null) {
+                try {
+                    const storedTasks = JSON.parse(localStorage.getItem(taskStorageKey) || "[]");
+                    tasks = Array.isArray(storedTasks) ? storedTasks : [];
+                } catch {
+                    tasks = [];
+                }
+                renderTasks();
+            }
+        });
+        window.addEventListener("pageshow", renderTodayClasses);
+        document.getElementById("dashboard-add-task").addEventListener("click", openTaskForm);
+        document.getElementById("add-task").addEventListener("click", openTaskForm);
+        document.getElementById("floating-add-task").addEventListener("click", openTaskForm);
+        document.getElementById("cancel-task").addEventListener("click", () => {
+            taskForm.reset();
+            taskForm.hidden = true;
+        });
+
+        taskForm.addEventListener("submit", (event) => {
+            event.preventDefault();
+            const formData = new FormData(taskForm);
+            tasks.push({
+                id: `${Date.now()}-${Math.random()}`,
+                title: formData.get("title").trim(),
+                className: formData.get("className").trim(),
+                dueDate: formData.get("dueDate"),
+                dueTime: formData.get("dueTime"),
+                priority: formData.get("priority"),
+                completed: false
+            });
+            saveTasks();
+            renderTasks();
+            window.StudySyncNotifications.play();
+            taskForm.reset();
+            taskForm.hidden = true;
+        });
+
+        renderTasks();
+        renderTodayClasses();
+    </script>
+</body>
+</html>

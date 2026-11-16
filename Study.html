@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study</title>
+    <link rel="stylesheet" href="theme.css">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+        }
+        a { text-decoration: none; }
+        .topbar {
+            background: #1f3a5f;
+            color: white;
+            padding: 18px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+        .brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            letter-spacing: 0.04em;
+        }
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .nav-btn {
+            background: #4f9cff;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            display: inline-block;
+        }
+        .nav-btn.active {
+            background: #2f6ed6;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 32px auto;
+            padding: 0 20px 40px;
+        }
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .page-header h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+        .study-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 22px;
+        }
+        .panel {
+            background: #111827;
+            border: 1px solid rgba(148, 163, 184, 0.12);
+            border-radius: 14px;
+            padding: 24px;
+        }
+        .timer-box {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border-radius: 16px;
+            padding: 28px;
+            text-align: center;
+            border: 1px solid rgba(148, 163, 184, 0.12);
+        }
+        .timer {
+            font-size: 4rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            color: #f8fafc;
+            margin: 18px 0;
+        }
+        .status {
+            color: #90cdf4;
+            font-size: 1rem;
+            margin-bottom: 18px;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        button {
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .start-btn {
+            background: #1769d2;
+            color: white;
+        }
+        .secondary-btn {
+            background: #1e293b;
+            color: #e2e8f0;
+            border: 1px solid #4b5563;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(100px, 1fr));
+            gap: 14px;
+            margin-top: 18px;
+        }
+        .stat-box {
+            background: #1f2937;
+            border: 1px solid rgba(148, 163, 184, 0.12);
+            border-radius: 10px;
+            padding: 14px;
+            text-align: center;
+        }
+        .stat-box strong {
+            display: block;
+            font-size: 1.5rem;
+            color: #f8fafc;
+        }
+        .stat-box span {
+            color: #a5b4c9;
+            font-size: 0.8rem;
+        }
+        .study-form {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            color: #dbeafe;
+            font-weight: 600;
+        }
+        .field input {
+            background: #0f172a;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 8px;
+            color: white;
+            padding: 10px 12px;
+            font-size: 1rem;
+        }
+        .full-width {
+            width: 100%;
+        }
+        .progress-card {
+            background: #0f172a;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 12px;
+        }
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            color: #dbeafe;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #1e293b;
+            border-radius: 999px;
+            overflow: hidden;
+            border: 1px solid rgba(148, 163, 184, 0.15);
+        }
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #60a5fa, #34d399);
+            border-radius: inherit;
+            transition: width 0.3s ease;
+        }
+        .progress-meta {
+            color: #a5b4c9;
+            font-size: 0.85rem;
+            margin-top: 10px;
+        }
+        @media (max-width: 760px) {
+            .study-grid, .stats-grid { grid-template-columns: 1fr; }
+            .timer { font-size: 3rem; }
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <div class="brand">StudySync</div>
+        <nav class="nav-buttons" aria-label="Main navigation">
+            <a href="home.html" class="nav-btn">Home</a>
+            <a href="Tasks.html" class="nav-btn">Tasks &amp; Events</a>
+            <a href="Schedule.html" class="nav-btn">Schedule</a>
+            <a href="Study.html" class="nav-btn active">Study</a>
+            <a href="studysync.php" class="nav-btn">History</a>
+            <a href="about.html" class="nav-btn">About Us</a>
+            <a href="pr.html" class="nav-btn">Login</a>
+        </nav>
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch theme">Light theme</button>
+    </header>
+
+    <main class="container">
+        <div class="page-header">
+            <h1>Study Session</h1>
+        </div>
+
+        <section class="study-grid">
+            <div class="panel">
+                <div class="timer-box">
+                    <div class="status" id="study-status">Ready for a focused session.</div>
+                    <p class="status" id="history-save-error" role="alert" hidden></p>
+                    <div class="timer" id="study-timer">25:00</div>
+                    <div class="controls">
+                        <button class="start-btn" id="start-study" type="button">Start</button>
+                        <button class="secondary-btn" id="pause-study" type="button">Pause</button>
+                        <button class="secondary-btn" id="reset-study" type="button">Reset</button>
+                        <button class="secondary-btn" id="stop-study-sound" type="button" disabled>Stop Sound</button>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="panel">
+                <h2 style="margin-top:0;">Study settings</h2>
+
+                <div class="study-form">
+                    <label class="field">
+                        <span>Subject</span>
+                        <input id="study-subject" type="text" value="Biology" placeholder="Enter subject">
+                    </label>
+
+                    <label class="field">
+                        <span>Study time (minutes)</span>
+                        <input id="study-minutes" type="number" min="0" max="180" step="1" value="25">
+                    </label>
+
+                    <label class="field">
+                        <span>Additional seconds</span>
+                        <input id="study-seconds" type="number" min="0" max="59" step="1" value="0">
+                    </label>
+
+                    <button class="secondary-btn full-width" id="apply-study-settings" type="button">Set session</button>
+                </div>
+
+                <div class="progress-card">
+                    <div class="progress-header">
+                        <span id="progress-subject">Biology</span>
+                        <strong id="progress-percent">0%</strong>
+                    </div>
+                    <div class="progress-bar" aria-label="Study progress">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                    <div class="progress-meta" id="progress-text">0 of 25 min completed</div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <strong id="session-count">1</strong>
+                        <span>Session</span>
+                    </div>
+                    <div class="stat-box">
+                        <strong id="study-total">25m</strong>
+                        <span>Planned</span>
+                    </div>
+                    <div class="stat-box">
+                        <strong id="focus-score">0%</strong>
+                        <span>Progress</span>
+                    </div>
+                </div>
+            </aside>
+        </section>
+    </main>
+
+    <script src="notifications.js"></script>
+    <script>
+        const studyTimer = document.getElementById("study-timer");
+        const studyStatus = document.getElementById("study-status");
+        const pauseStudyButton = document.getElementById("pause-study");
+        const startStudyButton = document.getElementById("start-study");
+        const resetStudyButton = document.getElementById("reset-study");
+        const stopStudySoundButton = document.getElementById("stop-study-sound");
+        const applyStudySettingsButton = document.getElementById("apply-study-settings");
+        const studySubjectInput = document.getElementById("study-subject");
+        const studyMinutesInput = document.getElementById("study-minutes");
+        const studySecondsInput = document.getElementById("study-seconds");
+        const historySaveError = document.getElementById("history-save-error");
+        const progressSubject = document.getElementById("progress-subject");
+        const progressPercent = document.getElementById("progress-percent");
+        const progressFill = document.getElementById("progress-fill");
+        const progressText = document.getElementById("progress-text");
+        const sessionCount = document.getElementById("session-count");
+        const studyTotal = document.getElementById("study-total");
+        const focusScore = document.getElementById("focus-score");
+
+        let totalStudySeconds = 25 * 60;
+        let studySecondsRemaining = totalStudySeconds;
+        let studyInterval = null;
+
+        function formatTime(totalSeconds) {
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+        }
+
+        function getSubjectLabel() {
+            return studySubjectInput.value.trim() || "Study";
+        }
+
+        async function recordStudyCompletion() {
+            try {
+                const response = await fetch("studysync.php?api=1", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        kind: "study_session",
+                        subject: getSubjectLabel(),
+                        duration_seconds: totalStudySeconds
+                    })
+                });
+                const result = await response.json();
+                if (!response.ok) throw new Error(result.error || "History could not be saved.");
+                historySaveError.hidden = true;
+            } catch (error) {
+                historySaveError.textContent = error.message || "History could not be saved. Check that the site is running through XAMPP and MySQL is available.";
+                historySaveError.hidden = false;
+            }
+        }
+
+        function updateProgress() {
+            const subjectLabel = getSubjectLabel();
+            const completedSeconds = totalStudySeconds - studySecondsRemaining;
+            const percent = totalStudySeconds === 0 ? 0 : Math.min((completedSeconds / totalStudySeconds) * 100, 100);
+            const roundedPercent = Math.round(percent);
+
+            progressSubject.textContent = subjectLabel;
+            progressPercent.textContent = `${roundedPercent}%`;
+            progressFill.style.width = `${roundedPercent}%`;
+            progressText.textContent = `${Math.floor(completedSeconds / 60)} min ${completedSeconds % 60} sec of ${Math.floor(totalStudySeconds / 60)} min ${totalStudySeconds % 60} sec completed`;
+            focusScore.textContent = `${roundedPercent}%`;
+            studyTotal.textContent = `${Math.floor(totalStudySeconds / 60)}m ${totalStudySeconds % 60}s`;
+            sessionCount.textContent = "1";
+        }
+
+        function renderStudyTimer() {
+            studyTimer.textContent = formatTime(studySecondsRemaining);
+            updateProgress();
+        }
+
+        function applyStudySettings() {
+            const minutesValue = Number(studyMinutesInput.value);
+            const secondsValue = Number(studySecondsInput.value);
+            const safeMinutes = Number.isFinite(minutesValue) ? Math.min(Math.max(minutesValue, 0), 180) : 25;
+            const safeSeconds = Number.isFinite(secondsValue) ? Math.min(Math.max(secondsValue, 0), 59) : 0;
+            studyMinutesInput.value = safeMinutes;
+            studySecondsInput.value = safeSeconds;
+
+            if (safeMinutes === 0 && safeSeconds === 0) {
+                studyStatus.textContent = "Set a study time greater than zero.";
+                return;
+            }
+
+            stopStudySound();
+            totalStudySeconds = safeMinutes * 60 + safeSeconds;
+            studySecondsRemaining = totalStudySeconds;
+            clearInterval(studyInterval);
+            studyInterval = null;
+            pauseStudyButton.disabled = true;
+            studyStatus.textContent = `Ready to study ${getSubjectLabel()}.`;
+            renderStudyTimer();
+        }
+
+        function stopStudySound() {
+            window.StudySyncNotifications.stopRepeated();
+            stopStudySoundButton.disabled = true;
+        }
+
+        startStudyButton.addEventListener("click", () => {
+            if (studyInterval !== null || studySecondsRemaining === 0) return;
+            studyStatus.textContent = `Studying ${getSubjectLabel()} in progress.`;
+            pauseStudyButton.disabled = false;
+            studyInterval = setInterval(() => {
+                studySecondsRemaining -= 1;
+                renderStudyTimer();
+
+                if (studySecondsRemaining <= 0) {
+                    studySecondsRemaining = 0;
+                    clearInterval(studyInterval);
+                    studyInterval = null;
+                    pauseStudyButton.disabled = true;
+                    studyStatus.textContent = `${getSubjectLabel()} session complete.`;
+                    renderStudyTimer();
+                    recordStudyCompletion();
+                    window.StudySyncNotifications.playRepeated();
+                    stopStudySoundButton.disabled = false;
+                }
+            }, 1000);
+        });
+
+        pauseStudyButton.addEventListener("click", () => {
+            if (studyInterval === null) return;
+            clearInterval(studyInterval);
+            studyInterval = null;
+            pauseStudyButton.disabled = true;
+            studyStatus.textContent = `Session paused for ${getSubjectLabel()}.`;
+        });
+
+        resetStudyButton.addEventListener("click", () => {
+            stopStudySound();
+            clearInterval(studyInterval);
+            studyInterval = null;
+            studySecondsRemaining = totalStudySeconds;
+            pauseStudyButton.disabled = true;
+            studyStatus.textContent = `Ready to study ${getSubjectLabel()}.`;
+            renderStudyTimer();
+        });
+
+        stopStudySoundButton.addEventListener("click", stopStudySound);
+        applyStudySettingsButton.addEventListener("click", applyStudySettings);
+        studySubjectInput.addEventListener("input", () => {
+            progressSubject.textContent = getSubjectLabel();
+            studyStatus.textContent = `Ready to study ${getSubjectLabel()}.`;
+            updateProgress();
+        });
+
+        renderStudyTimer();
+        pauseStudyButton.disabled = true;
+    </script>
+    <script src="theme.js"></script>
+</body>
+</html>

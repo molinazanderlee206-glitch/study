@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us | StudySync</title>
+    <link rel="stylesheet" href="theme.css">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+        }
+        a { text-decoration: none; }
+        .topbar {
+            background: #1f3a5f;
+            color: white;
+            padding: 18px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+        .brand { font-size: 1.5rem; font-weight: bold; letter-spacing: 0.04em; }
+        .nav-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+        .nav-btn {
+            background: #4f9cff;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            display: inline-block;
+        }
+        .nav-btn.active { background: #2f6ed6; }
+        .container { max-width: 1000px; margin: 32px auto; padding: 0 20px 40px; }
+        .about-panel {
+            background: #111827;
+            border: 1px solid rgba(148, 163, 184, 0.12);
+            border-radius: 14px;
+            padding: 28px;
+            line-height: 1.7;
+        }
+        h1, h2 { color: #f8fafc; line-height: 1.25; }
+        h1 { margin: 0 0 8px; font-size: 2rem; }
+        h2 { margin: 28px 0 10px; font-size: 1.35rem; }
+        p { margin: 0 0 14px; }
+        .copyright {
+            margin-top: 30px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(148, 163, 184, 0.25);
+        }
+        .copyright h2 { margin-top: 0; }
+        .tagline { margin-top: 24px; font-weight: 700; }
+        @media (max-width: 760px) {
+            .topbar { align-items: flex-start; flex-direction: column; }
+            .about-panel { padding: 20px; }
+        }
+        body[data-theme="light"] .about-panel { border-color: #dbe3ee; background: #fff; }
+        body[data-theme="light"] h1,
+        body[data-theme="light"] h2 { color: #1e293b; }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <div class="brand">StudySync</div>
+        <nav class="nav-buttons" aria-label="Main navigation">
+            <a href="home.html" class="nav-btn">Home</a>
+            <a href="Tasks.html" class="nav-btn">Tasks &amp; Events</a>
+            <a href="Schedule.html" class="nav-btn">Schedule</a>
+            <a href="Study.html" class="nav-btn">Study</a>
+            <a href="studysync.php" class="nav-btn">History</a>
+            <a href="about.html" class="nav-btn active" aria-current="page">About Us</a>
+            <a href="pr.html" class="nav-btn">Login</a>
+        </nav>
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch theme">Light theme</button>
+    </header>
+
+    <main class="container">
+        <article class="about-panel">
+            <h1>ABOUT US</h1>
+            <h2>Welcome to StudySync&trade;</h2>
+            <p>StudySync&trade; is an educational digital study planner developed by Grade 12 students of Prenza National High School. It is designed to help Senior High School students prepare for upcoming examinations and quizzes while improving their time management and study organization.</p>
+            <p>Through its digital features, StudySync&trade; provides students with a convenient way to organize academic tasks, monitor upcoming deadlines, schedule study sessions, and keep track of their learning progress.</p>
+            <p>This website was developed primarily for educational and academic purposes as part of a student research project. It is not intended for commercial use or public distribution.</p>
+
+            <h2>Our Purpose</h2>
+            <p>StudySync&trade; aims to provide students with a practical and accessible digital platform that supports effective study planning, organized learning, and efficient time management.</p>
+            <p>We believe that proper preparation and organization can help students become more responsible and productive in managing their academic responsibilities.</p>
+
+            <h2>Who We Are</h2>
+            <p>We are Grade 12 students from Prenza National High School who developed StudySync&trade; as an educational project. Our goal is to explore how digital technology can support students in preparing for examinations, managing academic activities, and developing better study habits.</p>
+
+            <section class="copyright" aria-labelledby="copyright-heading">
+                <h2 id="copyright-heading">COPYRIGHT NOTICE</h2>
+                <p>&copy; 2026 StudySync. All Rights Reserved.</p>
+                <p>StudySync&trade; is an educational study platform designed primarily for Senior High School students. Its name, logo, website design, original learning materials, study guides, assessments, and other original content are subject to applicable intellectual property and copyright laws.</p>
+                <p>No part of the original content of this website may be copied, reproduced, modified, distributed, republished, or commercially exploited without prior written permission from the project owners, except as permitted by applicable law.</p>
+                <p><strong>Educational Use:</strong> Students may access and use the materials for personal learning, academic review, and non-commercial educational purposes, provided that proper acknowledgment is given and the materials are not misrepresented or redistributed without authorization.</p>
+                <p><strong>Third-Party Materials:</strong> References, quotations, images, and other materials belonging to their respective owners remain the property of their copyright holders. Appropriate credits and acknowledgments shall be provided whenever applicable.</p>
+
+                <h2>TRADEMARK NOTICE</h2>
+                <p>StudySync&trade; and its associated logo are used as identifying marks for this educational platform and its services. Unauthorized use of the name and logo is discouraged. Any applicable trademark rights are subject to relevant laws and regulations.</p>
+            </section>
+
+            <p class="tagline">StudySync&trade; &mdash; Learn. Practice. Excel.</p>
+        </article>
+    </main>
+    <script src="theme.js"></script>
+</body>
+</html>

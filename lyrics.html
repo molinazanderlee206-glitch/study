@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timed Lyrics Player</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            min-height: 100vh;
+            margin: 0;
+            padding: 36px 20px;
+            background: #100e0b;
+            color: #f1f5f9;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        main { max-width: 900px; margin: 0 auto; }
+        h1 { margin: 0; }
+        .intro { margin: 8px 0 28px; color: #b8c5d6; }
+        .player-layout {
+            display: grid;
+            grid-template-columns: minmax(250px, 0.9fr) minmax(300px, 1.1fr);
+            align-items: center;
+            gap: 36px;
+        }
+        .lyrics-screen {
+            display: grid;
+            place-items: center;
+            width: 100%;
+            aspect-ratio: 1;
+            padding: 28px;
+            background: #d92332;
+            color: #fff;
+            text-align: center;
+        }
+        #current-line {
+            margin: 0;
+            font-size: 1.65rem;
+            font-weight: 700;
+            line-height: 1.25;
+            overflow-wrap: anywhere;
+        }
+        .controls { min-width: 0; }
+        label { display: block; margin: 20px 0 8px; font-weight: 700; }
+        textarea {
+            display: block;
+            width: 100%;
+            min-height: 210px;
+            padding: 12px;
+            border: 1px solid #52647b;
+            border-radius: 6px;
+            background: #1e293b;
+            color: #f1f5f9;
+            font: inherit;
+            line-height: 1.5;
+            resize: vertical;
+        }
+        .tempo-control {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .tempo-control input {
+            width: 90px;
+            min-height: 40px;
+            padding: 8px;
+            border: 1px solid #52647b;
+            border-radius: 6px;
+            background: #1e293b;
+            color: #f1f5f9;
+            font: inherit;
+        }
+        .tempo-control span { color: #b8c5d6; }
+        .button-row { display: flex; flex-wrap: wrap; gap: 8px; }
+        button {
+            padding: 10px 16px;
+            border: 1px solid #52647b;
+            border-radius: 6px;
+            background: transparent;
+            color: white;
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        button:hover:not(:disabled) { background: #34445b; }
+        button.primary { border-color: #d92332; background: #d92332; }
+        button.primary:hover:not(:disabled) { background: #f13d4b; }
+        button:disabled { cursor: not-allowed; opacity: 0.5; }
+        #message { min-height: 1.5em; margin-bottom: 0; color: #b8c5d6; }
+        @media (max-width: 680px) {
+            body { padding: 24px 16px; }
+            .player-layout { grid-template-columns: 1fr; gap: 24px; }
+            .lyrics-screen { max-width: 420px; margin: 0 auto; }
+            #current-line { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>Timed Lyrics Player</h1>
+        <p class="intro">Paste lyrics you have permission to use. Each line appears in time with playback.</p>
+        <div class="player-layout">
+            <section class="lyrics-screen" aria-label="Current lyric">
+                <p id="current-line" aria-live="polite">Your lyrics appear here</p>
+            </section>
+            <section class="controls" aria-label="Lyrics player controls">
+                <label for="lyrics-input">Lyrics text, one line at a time</label>
+                <textarea id="lyrics-input" placeholder="Paste or type one lyric line per row..."></textarea>
+                <label for="line-duration">Time per line</label>
+                <div class="tempo-control">
+                    <input id="line-duration" type="number" min="1" max="30" value="4">
+                    <span>seconds</span>
+                </div>
+                <div class="button-row">
+                    <button class="primary" id="play-button" type="button">Start</button>
+                    <button id="pause-button" type="button" disabled>Pause</button>
+                    <button id="reset-button" type="button">Reset</button>
+                </div>
+                <p id="message" role="status" aria-live="polite">Ready.</p>
+            </section>
+        </div>
+    </main>
+    <script>
+        const lyricsInput = document.getElementById("lyrics-input");
+        const currentLine = document.getElementById("current-line");
+        const lineDuration = document.getElementById("line-duration");
+        const message = document.getElementById("message");
+        const playButton = document.getElementById("play-button");
+        const pauseButton = document.getElementById("pause-button");
+        let lyrics = [];
+        let currentIndex = -1;
+        let playbackInterval = null;
+
+        function stopPlayback() {
+            if (playbackInterval !== null) {
+                clearInterval(playbackInterval);
+                playbackInterval = null;
+            }
+            pauseButton.disabled = true;
+        }
+
+        function showLine(index) {
+            currentLine.textContent = lyrics[index];
+            message.textContent = `Line ${index + 1} of ${lyrics.length}`;
+        }
+
+        playButton.addEventListener("click", () => {
+            if (playbackInterval !== null) return;
+
+            if (lyrics.length === 0) {
+                lyrics = lyricsInput.value.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+            }
+
+            if (lyrics.length === 0) {
+                message.textContent = "Paste at least one line first.";
+                lyricsInput.focus();
+                return;
+            }
+
+            if (currentIndex < 0 || currentIndex >= lyrics.length) {
+                currentIndex = 0;
+                showLine(currentIndex);
+            }
+
+            const seconds = Math.min(30, Math.max(1, Number(lineDuration.value) || 4));
+            pauseButton.disabled = false;
+            message.textContent = `Line ${currentIndex + 1} of ${lyrics.length}`;
+            playbackInterval = setInterval(() => {
+                currentIndex += 1;
+                if (currentIndex >= lyrics.length) {
+                    stopPlayback();
+                    currentLine.textContent = "The end";
+                    message.textContent = "Playback complete. Press Start to play again.";
+                    return;
+                }
+                showLine(currentIndex);
+            }, seconds * 1000);
+        });
+
+        pauseButton.addEventListener("click", () => {
+            if (playbackInterval === null) return;
+            stopPlayback();
+            message.textContent = `Paused at line ${currentIndex + 1} of ${lyrics.length}`;
+        });
+
+        document.getElementById("reset-button").addEventListener("click", () => {
+            stopPlayback();
+            lyrics = [];
+            currentIndex = -1;
+            currentLine.textContent = "Your lyrics appear here";
+            message.textContent = "Ready.";
+        });
+    </script>
+</body>
+</html>

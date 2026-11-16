@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Login | StudySync</title>
+        <link rel="stylesheet" href="Login.css">
+    </head>
+    <body>
+        <main class="login-page">
+            <section class="Login" aria-labelledby="login-title">
+                <a class="logo-link" href="home.html" aria-label="StudySync home">
+                    <img class="login-logo" src="studysync-logo.jpg" alt="StudySync">
+                </a>
+                <p class="eyebrow">YOUR STUDY SPACE</p>
+                <h1 id="login-title">Welcome back</h1>
+                <p class="login-intro">Log in to continue planning your studies.</p>
+
+                <form id="login-form">
+                    <label for="user">Username</label>
+                    <input type="text" id="user" name="username" placeholder="Enter your username" autocomplete="username" required>
+
+                    <label for="pass">Password</label>
+                    <input type="password" id="pass" name="password" placeholder="Enter your password" autocomplete="current-password" required>
+
+                    <button type="submit">Log in</button>
+                    <p class="message" id="message" role="status" aria-live="polite"></p>
+                </form>
+
+            
+            </section>
+        </main>
+        <script>
+            document.getElementById("login-form").addEventListener("submit", (event) => {
+                event.preventDefault();
+                const username = document.getElementById("user").value;
+                const password = document.getElementById("pass").value;
+                const message = document.getElementById("message");
+
+                if (username === "Senior Student" && password === "12345678910") {
+                    message.className = "message success";
+                    message.textContent = "Login successful! Redirecting...";
+                    window.location.href = "home.html";
+                } else {
+                    message.className = "message error";
+                    message.textContent = "Invalid username or password.";
+                }
+            });
+        </script>
+    </body>
+</html>

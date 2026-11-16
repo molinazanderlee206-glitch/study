@@ -1,0 +1,145 @@
+.theme-toggle {
+    flex-shrink: 0;
+    padding: 9px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    border-radius: 8px;
+    background: transparent;
+    color: white;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.theme-toggle:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+body[data-theme="light"] {
+    background: #f1f5f9;
+    color: #1e293b;
+}
+
+body[data-theme="light"] .page-header h1,
+body[data-theme="light"] .panel h2,
+body[data-theme="light"] .task-title,
+body[data-theme="light"] .stat-card .value,
+body[data-theme="light"] .stat-box strong,
+body[data-theme="light"] .history-item strong,
+body[data-theme="light"] .timer,
+body[data-theme="light"] .dashboard-heading h1,
+body[data-theme="light"] .dashboard-stat-card .stat,
+body[data-theme="light"] .planner-task-details strong,
+body[data-theme="light"] .upcoming-task-list li strong {
+    color: #1e293b;
+}
+
+body[data-theme="light"] .panel,
+body[data-theme="light"] .stat-card,
+body[data-theme="light"] .stat-box,
+body[data-theme="light"] .dashboard-stat-card,
+body[data-theme="light"] .task-form,
+body[data-theme="light"] .progress-card,
+body[data-theme="light"] .mini-card {
+    border-color: #dbe3ee;
+    background: #fff;
+}
+
+body[data-theme="light"] .task-item,
+body[data-theme="light"] .day-slot,
+body[data-theme="light"] .history-item,
+body[data-theme="light"] .planner-task-item,
+body[data-theme="light"] .upcoming-task-list li,
+body[data-theme="light"] .schedule-class-list li {
+    border-color: #dbe3ee;
+    background: #fff;
+}
+
+body[data-theme="light"] .timer-box {
+    border-color: #dbe3ee;
+    background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+}
+
+body[data-theme="light"] .task-meta,
+body[data-theme="light"] .stat-card h3,
+body[data-theme="light"] .stat-box span,
+body[data-theme="light"] .empty-state,
+body[data-theme="light"] .history-meta,
+body[data-theme="light"] .progress-meta,
+body[data-theme="light"] .mini-card li,
+body[data-theme="light"] .dashboard-date,
+body[data-theme="light"] .dashboard-empty,
+body[data-theme="light"] .planner-task-details span,
+body[data-theme="light"] .upcoming-task-list li span,
+body[data-theme="light"] .schedule-class-list li span {
+    color: #64748b;
+}
+
+body[data-theme="light"] label,
+body[data-theme="light"] .task-form label,
+body[data-theme="light"] .field,
+body[data-theme="light"] .progress-header,
+body[data-theme="light"] .mini-card h3 {
+    color: #334155;
+}
+
+body[data-theme="light"] input:not([type="checkbox"]),
+body[data-theme="light"] select,
+body[data-theme="light"] textarea {
+    border-color: #cbd5e1;
+    background: #fff;
+    color: #1e293b;
+}
+
+body[data-theme="light"] .timer-box .status {
+    color: #0369a1;
+}
+
+body[data-theme="light"] .progress-bar {
+    border-color: #cbd5e1;
+    background: #e2e8f0;
+}
+
+body[data-theme="light"] .day-header {
+    background: #e2e8f0;
+    color: #334155;
+}
+
+body[data-theme="light"] .session {
+    border-color: #bfdbfe;
+    background: #dbeafe;
+    color: #1e3a8a;
+}
+
+body[data-theme="light"] .session span {
+    color: #1d4ed8;
+}
+
+body[data-theme="light"] .section-heading h2,
+body[data-theme="light"] .section-count {
+    color: #1d4ed8;
+}
+
+body[data-theme="light"] .selected-day-list li {
+    border-color: #dbe3ee;
+    background: #fff;
+}
+
+body[data-theme="light"] .selected-day {
+    border-color: #dbe3ee;
+    background: #f8fafc;
+    color: #1e293b;
+}
+
+body[data-theme="light"] .day {
+    background: #f8fafc;
+}
+
+body[data-theme="light"] .day:hover {
+    background: #dbeafe;
+}
+
+body[data-theme="light"] .secondary-btn,
+body[data-theme="light"] .study-button.secondary,
+body[data-theme="light"] .task-cancel-button {
+    color: #334155;
+}
